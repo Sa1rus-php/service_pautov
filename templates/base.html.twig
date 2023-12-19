@@ -8,9 +8,27 @@
         {% endblock %}
 
         {% block javascripts %}
+            <link rel="stylesheet" href=" {{ asset('css/bootstrap.min.css') }}">
+            <link rel="stylesheet" href=" {{ asset('style.css') }}">
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
         {% endblock %}
     </head>
-    <body>
-        {% block body %}{% endblock %}
+    <style>
+        .testimonial-slider .carousel-indicators button {
+            width: 10px;
+            height: 10px;
+            background-color: #474747;
+            border-radius: 100%;
+        }
+        .testimonial-slider {
+            padding: 10px 0px 40px;
+        }
+    </style>
+    <body data-bs-spy="scroll" data-bs-target="#navbar" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true" tabindex="0">
+        {% block body %}
+
+        {% endblock %}
     </body>
 </html>
