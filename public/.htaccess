@@ -37,11 +37,11 @@ DirectoryIndex index.php
     #      is /public/hello/world:
     #      * strip per-dir prefix: /var/www/html/public/hello/world -> hello/world
     #      * applying pattern '.*' to uri 'hello/world'
-    #      * RewriteCond: input='/public/hello/world::hello/world' pattern='^(/.+)/(.*)::\\2$' => matched
+    #      * RewriteCond: input='/public/hello/world::hello/world' pattern='^(/.+)/(.*)::\$' => matched
     #   4. Execute the RewriteRule:
     #      * The %1 in the RewriteRule flag E=BASE:%1 refers to the first group captured in the RewriteCond ^(/.+)/(.*)
     #      * setting env variable 'BASE' to '/public'
-    RewriteCond %{REQUEST_URI}::$0 ^(/.+)/(.*)::\2$
+    RewriteCond %{REQUEST_URI}::$0 ^(/.+)/(.*)::$
     RewriteRule .* - [E=BASE:%1]
 
     # Sets the HTTP_AUTHORIZATION header removed by Apache
