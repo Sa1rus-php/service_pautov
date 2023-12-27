@@ -22,8 +22,8 @@ class IndexController extends AbstractController
     public function index(EntityManagerInterface $entityManager): Response
     {
         $reviews = $entityManager->getRepository(Review::class)->findAll();
-        $categories = $entityManager->getRepository(Category::class)->findAll();
-        $products = $entityManager->getRepository(Product::class)->findAll();
+        $categories = $entityManager->getRepository(Category::class)->findBy(['status' => true]);
+        $products = $entityManager->getRepository(Product::class)->findBy(['status' => true]);
 
         if ($this->getUser() !== null){
             $auth = true;

@@ -22,16 +22,15 @@ class ReviewCrudController extends AbstractCrudController
     {
         $id = IdField::new('id')->hideOnForm();
         $user = AssociationField::new('user');
-        $grade = IntegerField::new('grade');
         $title = TextField::new('title');
         $body = TextField::new('body');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $user, $title, $grade];
+            return [$id, $user, $title];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $user, $title, $grade];
+            return [$id, $user, $title];
         } else {
-            return [$id, $user, $title, $body, $grade];
+            return [$id, $user, $title, $body];
         }
     }
 }
