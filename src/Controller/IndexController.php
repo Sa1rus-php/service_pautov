@@ -123,4 +123,22 @@ class IndexController extends AbstractController
 
         return $this->redirect('/profile');
     }
+
+    #[Route('/error', name: 'error')]
+    public function error(Request $request): Response
+    {
+        $error = $request->get('error');
+        if ($this->getUser() !== null){
+            $auth = true;
+        } else {
+            $auth = false;
+        }
+
+        return $this->render('index/error.html.twig',
+            [
+                'error' => $error,
+                'auth' => $auth
+            ]
+        );
+    }
 }
