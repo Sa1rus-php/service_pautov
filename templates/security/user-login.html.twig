@@ -27,7 +27,7 @@
                             <input type="hidden" name="_csrf_token"
                                    value="{{ csrf_token('authenticate') }}">
                             <div class="d-flex mb-5 align-items-center">
-                                <span class="ml-auto"><a href="#" class="forgot-pass">Немає акаунта ?</a></span>
+                                <span class="ml-auto"><a href="{{ path('app_user_register') }}" class="forgot-pass">Немає акаунта ?</a></span>
                             </div>
                             <input type="submit" value="Увійти" class="btn btn-block btn-primary">
 
