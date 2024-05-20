@@ -31,11 +31,21 @@ class Order implements TimestampableInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
 
+    #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?SubProducts $subProduct = null;
+
     #[ORM\Column(length: 255, nullable: false)]
     private ?int $product_id = null;
 
+    #[ORM\Column(length: 255, nullable: false)]
+    private ?int $subProduct_id = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $order_date = null;
+
+    #[ORM\Column]
+    private ?bool $status = null;
 
     public function getId(): ?int
     {
@@ -90,6 +100,30 @@ class Order implements TimestampableInterface
         return $this;
     }
 
+    public function getSubProduct(): ?SubProducts
+    {
+        return $this->subProduct;
+    }
+
+    public function setSubProduct(?SubProducts $subProduct): static
+    {
+        $this->subProduct = $subProduct;
+
+        return $this;
+    }
+
+    public function getSubProductId(): ?Int
+    {
+        return $this->subProduct_id;
+    }
+
+    public function setSubProductId(?int $subProductId): static
+    {
+        $this->subProduct_id = $subProductId;
+
+        return $this;
+    }
+
     public function getOrderDate(): ?\DateTime
     {
         return $this->order_date;
@@ -98,6 +132,18 @@ class Order implements TimestampableInterface
     public function setOrderDate(?DateTime $orderDate): static
     {
         $this->order_date = $orderDate;
+
+        return $this;
+    }
+
+    public function isStatus(): ?bool
+    {
+        return $this->status;
+    }
+
+    public function setStatus(bool $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }

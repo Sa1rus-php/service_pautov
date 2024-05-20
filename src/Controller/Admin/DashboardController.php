@@ -7,6 +7,7 @@ use App\Entity\Category;
 use App\Entity\Order;
 use App\Entity\Product;
 use App\Entity\Review;
+use App\Entity\SubProducts;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -39,6 +40,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::section('Товари та Категорії');
         yield MenuItem::linkToCrud('Категорії', 'fa fa-file-o', Category::class);
         yield MenuItem::linkToCrud('Продукти', 'fa fa-archive', Product::class);
+        yield MenuItem::linkToCrud('Під продукти', 'fa fa-archive', SubProducts::class);
         yield MenuItem::section('Замовлення');
         yield MenuItem::linkToCrud('Замовлення', 'fa fa-credit-card-alt', Order::class);
         yield MenuItem::section('Відгуки');

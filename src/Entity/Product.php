@@ -36,9 +36,6 @@ class Product implements TimestampableInterface
     #[ORM\Column(length: 255, nullable: false)]
     private ?int $category_id = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 20, scale: 2)]
-    private ?string $price = null;
-
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Order::class, orphanRemoval: true)]
     private Collection $orders;
 
@@ -117,18 +114,6 @@ class Product implements TimestampableInterface
         return $this;
     }
 
-    public function getPrice(): ?string
-    {
-        return $this->price;
-    }
-
-    public function setPrice(string $price): static
-    {
-        $this->price = $price;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Order>
      */
@@ -203,6 +188,18 @@ class Product implements TimestampableInterface
     public function setStatus(bool $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getSubproduct(): ?SubProducts
+    {
+        return $this->subproduct;
+    }
+
+    public function setSubproduct(?SubProducts $subproduct): static
+    {
+        $this->subproduct = $subproduct;
 
         return $this;
     }
