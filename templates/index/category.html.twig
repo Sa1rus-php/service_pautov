@@ -161,8 +161,8 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="row-cols-1">
-                                            <label for="subProduct_id">Виберіть під тип продукту!</label>
-                                            <select class="form-select" name="subProduct_id" id="subProduct_id" required>
+                                            <label for="subProduct_id_{{ product.id }}">Виберіть під тип продукту!</label>
+                                            <select class="form-select subProduct-select" name="subProduct_id" id="subProduct_id_{{ product.id }}" data-product-id="{{ product.id }}" required>
                                                 <option value="" hidden="hidden">Оберіть</option>
                                                 {% for subProduct in subProducts %}
                                                     {% if(product.id == subProduct.product.id) %}
@@ -172,13 +172,13 @@
                                             </select>
                                         </div>
                                         <div class="row-cols-1">
-                                            <label for="order_date">На коли ви хочете записатися на ремонт?</label>
-                                            <input id="order_date" class="product_item_date" name="order_date" type="datetime-local">
+                                            <label for="order_date_{{ product.id }}">На коли ви хочете записатися на ремонт?</label>
+                                            <input id="order_date_{{ product.id }}" class="product_item_date" name="order_date" type="datetime-local">
                                             <input name="product_id" value="{{ product.id }}" hidden="hidden">
                                         </div>
                                         <div class="row-cols-1">
-                                            <label for="order_date">Ціна:</label>
-                                            <h5 class="text-bold" id="price-sub-product">0.00 ₴</h5>
+                                            <label for="order_date_{{ product.id }}">Ціна:</label>
+                                            <h5 class="text-bold" id="price-sub-product-{{ product.id }}">0.00 ₴</h5>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -346,13 +346,12 @@
             window.location.href = data.url;
         });
 
-        $(document).ready(function() {
-            $('#subProduct_id').on('change', function() {
-                var selectedOption = $(this).find('option:selected');
-                var price = selectedOption.data('price');
-                $('#price-sub-product').text(price + ' ₴');
-            });
-
+        $('.subProduct-select').on('change', function() {
+            var productId = $(this).data('product-id');
+            var selectedOption = $(this).find('option:selected');
+            var price = selectedOption.data('price');
+            $('#price-sub-product-' + productId).text(price + ' ₴');
         });
+
     </script>
 {% endblock %}
