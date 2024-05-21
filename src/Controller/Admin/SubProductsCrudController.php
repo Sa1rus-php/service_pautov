@@ -25,19 +25,17 @@ class SubProductsCrudController extends AbstractCrudController
     {
         $id = IdField::new('id');
         $name = TextField::new('name');
-        $description = TextField::new('description');
         $price = NumberField::new('price');
         $execution = NumberField::new('execution');
         $status = BooleanField::new('status');
-        $imageFile = TextareaField::new('imageFile')->setFormType(VichImageType::class);
         $product = AssociationField::new('product');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $name, $product, $description, $execution, $price, $status];
+            return [$id, $name, $product, $execution, $price, $status];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$name, $description, $price, $execution, $status];
+            return [$name, $price, $execution, $status];
         } else {
-            return [$name, $description, $execution, $price, $status, $imageFile, $product];
+            return [$name, $execution, $price, $status, $product];
         }
     }
 }
