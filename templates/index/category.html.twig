@@ -173,7 +173,7 @@
                                         </div>
                                         <div class="row-cols-1">
                                             <label for="order_date">На коли ви хочете записатися на ремонт?</label>
-                                            <input id="order_date" name="order_date" type="datetime-local">
+                                            <input id="order_date" class="product_item_date" name="order_date" type="datetime-local">
                                             <input name="product_id" value="{{ product.id }}" hidden="hidden">
                                         </div>
                                         <div class="row-cols-1">
@@ -238,6 +238,73 @@
         <hr>
     </footer>
     <script>
+        let occupiedDates = {};
+
+        function fetchOccupiedDates() {
+            return $.ajax({
+                url: '/get-time-slots',
+                method: 'POST',
+                data: {},
+                success: function(response) {
+                    occupiedDates = response;
+                },
+                error: function(xhr, status, error) {
+                    console.error("Failed to fetch occupied dates: ", error);
+                }
+            });
+        }
+
+        function disableTimeRanges(date) {
+            const selectedDate = date.toISOString().split('T')[0];
+            if (occupiedDates[selectedDate]) {
+                const hours = date.getHours().toString().padStart(2, '0');
+                const minutes = date.getMinutes().toString().padStart(2, '0');
+                const currentTime = `${hours}:${minutes}`;
+
+                for (const range of occupiedDates[selectedDate]) {
+                    if (currentTime >= range.start && currentTime <= range.end) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        $(document).ready(function() {
+            fetchOccupiedDates().then(function() {
+                flatpickr.localize(flatpickr.l10ns.ru);
+                flatpickr(".product_item_date", {
+                    enableTime: true,
+                    dateFormat: "Y-m-d H:i",
+                    time_24hr: true,
+                    minTime: "08:00",
+                    maxTime: "18:00",
+                    minuteIncrement: 10,
+                    minDate: 'today',
+                    "locale": {
+                        "firstDayOfWeek": 1,
+                    },
+                    disable: [
+                        function(date) {
+                            return disableTimeRanges(date);
+                        },
+                        function(date) {
+                            return (date.getDay() === 0 || date.getDay() === 6);
+                        }
+                    ],
+                    onChange: function(selectedDates, dateStr, instance) {
+                        if (selectedDates.length > 0) {
+                            const selectedDate = selectedDates[0];
+                            if (disableTimeRanges(selectedDate)) {
+                                toastr.error('Обраний час недоступний. Будь ласка, виберіть інший час.');
+                                instance.clear();
+                            }
+                        }
+                    }
+                });
+            });
+        });
+
         $('#find-products').select2({
             placeholder: 'Пошук продуктів',
             ajax: {

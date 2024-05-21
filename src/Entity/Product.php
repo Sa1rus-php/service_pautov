@@ -135,7 +135,6 @@ class Product implements TimestampableInterface
     public function removeOrder(Order $order): static
     {
         if ($this->orders->removeElement($order)) {
-            // set the owning side to null (unless already changed)
             if ($order->getProduct() === $this) {
                 $order->setProduct(null);
             }
@@ -149,8 +148,6 @@ class Product implements TimestampableInterface
         $this->imageFile = $imageFile;
 
         if (null !== $imageFile) {
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
             $this->updatedAt = new \DateTimeImmutable();
         }
     }
