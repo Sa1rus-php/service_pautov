@@ -78,6 +78,7 @@ class IndexController extends AbstractController
             $order->setSubProduct($subProduct);
             $date = new DateTime($params['order_date']);
             $order->setOrderDate($date);
+            $order->setStatus(false);
 
             $entityManager = $doctrine->getManager();
             $entityManager->persist($order);
