@@ -90,7 +90,7 @@
                                                     <select class="form-select product_select_item_products" name="subProduct_id" style="display: none;">
                                                         <option value="" hidden="hidden">Оберіть</option>
                                                         {% for product in products %}
-                                                                <option value="{{ product.id }}" >{{ product.name }}</option>
+                                                                <option value="{{ product.id }}" {% if product.id  == order.product.id  %}selected{% endif %}>{{ product.name }}</option>
                                                         {% endfor %}
                                                     </select>
                                                 </td>
@@ -99,7 +99,7 @@
                                                     <select class="form-select product_select_subproducts" name="subProduct_id" style="display: none;">
                                                         <option value="" hidden="hidden">Оберіть</option>
                                                         {% for subProduct in subProducts %}
-                                                                <option value="{{ subProduct.id }}" data-price="{{ subProduct.price }}" data-product="{{ subProduct.product.id }}">{{ subProduct.name }}</option>
+                                                            <option value="{{ subProduct.id }}" data-price="{{ subProduct.price }}" data-product="{{ subProduct.product.id }}" {% if order.subproduct.id == subProduct.id  %}selected{% endif %}>{{ subProduct.name }}</option>
                                                         {% endfor %}
                                                     </select>
                                                 </td>

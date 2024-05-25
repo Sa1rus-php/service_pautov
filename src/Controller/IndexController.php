@@ -83,6 +83,8 @@ class IndexController extends AbstractController
             $entityManager = $doctrine->getManager();
             $entityManager->persist($order);
             $entityManager->flush();
+        } else {
+            return $this->redirect('/login');
         }
 
         return $this->redirect('/');
