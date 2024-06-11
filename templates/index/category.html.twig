@@ -103,6 +103,12 @@
                                 <a class="nav-link me-4" href="{{ path('frequent_questions') }}">Часті питання</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link me-4" href="{{ path('app_index') }}#footer">Контакти</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link me-4" href="{{ path('app_cart') }}">Кошик</a>
+                            </li>
+                            <li class="nav-item">
                                 <div class="user-items ps-5">
                                     <ul class="d-flex justify-content-end list-unstyled">
                                         <li class="pe-3">
@@ -154,7 +160,8 @@
                     <div class="modal fade" id="order-{{ product.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
-                                <form action="{{ path('create_order') }}" method="post">
+                                <form action="{{ path('app_cart_add') }}" method="post">
+                                    <input hidden="hidden" name="product_id" value="{{ product.id }}">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel">Запис на ремонт</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -166,15 +173,19 @@
                                                 <option value="" hidden="hidden">Оберіть</option>
                                                 {% for subProduct in subProducts %}
                                                     {% if(product.id == subProduct.product.id) %}
-                                                        <option value="{{ subProduct.id }}" data-price="{{ subProduct.price }}">{{ subProduct.name }}</option>
+                                                        <option value="{{ subProduct.id }}" data-subProductId="{{ subProduct.id }}" data-price="{{ subProduct.price }}">{{ subProduct.name }}</option>
                                                     {% endif %}
                                                 {% endfor %}
                                             </select>
                                         </div>
                                         <div class="row-cols-1">
-                                            <label for="order_date_{{ product.id }}">На коли ви хочете записатися на ремонт?</label>
-                                            <input id="order_date_{{ product.id }}" class="product_item_date" name="order_date" type="datetime-local">
-                                            <input name="product_id" value="{{ product.id }}" hidden="hidden">
+                                            <label for="modelSubProduct_id_{{ product.id }}">Виберіть модель під продукту!</label>
+                                            <select class="form-select modelSubProduct-select" name="modelSubProduct_id" id="modelSubProduct_id_{{ product.id }}" required>
+                                                <option value="" hidden="hidden">Оберіть</option>
+                                                {% for modelSubProduct in modelSubProducts %}
+                                                    <option value="{{ modelSubProduct.id }}" data-subProductId="{{ modelSubProduct.subProduct.id }}" data-price="{{ modelSubProduct.price }}">{{ modelSubProduct.name }}</option>
+                                                {% endfor %}
+                                            </select>
                                         </div>
                                         <div class="row-cols-1">
                                             <label for="order_date_{{ product.id }}">Ціна:</label>
@@ -183,7 +194,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
-                                        <button type="submit" class="btn btn-primary">Записатися</button>
+                                        <button type="submit" class="btn btn-primary">Добавити у корзину</button>
                                     </div>
                                 </form>
                             </div>
@@ -203,7 +214,9 @@
                         <div class="col-lg-3 col-sm-6 pb-3">
                             <div class="footer-menu">
                                 <h3>Pautov service</h3>
-                                <p>Сервіс твоєї мрії!</p>
+                                <p>Адреса: проспект Героїв Харкова, 274</p>
+                                <p>Графік роботи: ПН-ПТ з 8 до 18</p>
+                                <p>Робочий телефон: +380 99 999 9999</p>
                             </div>
                         </div>
                         <div class="col-lg-2 col-sm-6 pb-3">
@@ -238,71 +251,33 @@
         <hr>
     </footer>
     <script>
-        let occupiedDates = {};
+        $('.modelSubProduct-select').prop('disabled', true);
 
-        function fetchOccupiedDates() {
-            return $.ajax({
-                url: '/get-time-slots',
-                method: 'POST',
-                data: {},
-                success: function(response) {
-                    occupiedDates = response;
-                },
-                error: function(xhr, status, error) {
-                    console.error("Failed to fetch occupied dates: ", error);
-                }
-            });
-        }
+        // Когда выбран подтип продукта
+        $('.subProduct-select').change(function() {
+            // Получаем ID продукта и выбранный подтип продукта
+            var productId = $(this).data('product-id');
+            var selectedSubProductId = $(this).val();
 
-        function disableTimeRanges(date) {
-            const selectedDate = date.toISOString().split('T')[0];
-            if (occupiedDates[selectedDate]) {
-                const hours = date.getHours().toString().padStart(2, '0');
-                const minutes = date.getMinutes().toString().padStart(2, '0');
-                const currentTime = `${hours}:${minutes}`;
+            // Находим соответствующий select для моделей подтипов продуктов
+            var modelSubProductSelect = $('#modelSubProduct_id_' + productId);
 
-                for (const range of occupiedDates[selectedDate]) {
-                    if (currentTime >= range.start && currentTime <= range.end) {
-                        return true;
-                    }
-                }
+            if (selectedSubProductId) {
+                // Делаем select для моделей подтипов доступным
+                modelSubProductSelect.prop('disabled', false);
+
+                // Скрываем все опции
+                modelSubProductSelect.find('option').hide();
+
+                // Показываем опции, соответствующие выбранному подтипу продукта
+                modelSubProductSelect.find('option[data-subproductid="' + selectedSubProductId + '"]').show();
+
+                // Обновляем select, чтобы скрытые опции не отображались как выбранные
+                modelSubProductSelect.val('');
+            } else {
+                // Если ничего не выбрано, делаем select для моделей подтипов недоступным
+                modelSubProductSelect.prop('disabled', true);
             }
-            return false;
-        }
-
-        $(document).ready(function() {
-            fetchOccupiedDates().then(function() {
-                flatpickr.localize(flatpickr.l10ns.ru);
-                flatpickr(".product_item_date", {
-                    enableTime: true,
-                    dateFormat: "Y-m-d H:i",
-                    time_24hr: true,
-                    minTime: "08:00",
-                    maxTime: "18:00",
-                    minuteIncrement: 10,
-                    minDate: 'today',
-                    "locale": {
-                        "firstDayOfWeek": 1,
-                    },
-                    disable: [
-                        function(date) {
-                            return disableTimeRanges(date);
-                        },
-                        function(date) {
-                            return (date.getDay() === 0 || date.getDay() === 6);
-                        }
-                    ],
-                    onChange: function(selectedDates, dateStr, instance) {
-                        if (selectedDates.length > 0) {
-                            const selectedDate = selectedDates[0];
-                            if (disableTimeRanges(selectedDate)) {
-                                toastr.error('Обраний час недоступний. Будь ласка, виберіть інший час.');
-                                instance.clear();
-                            }
-                        }
-                    }
-                });
-            });
         });
 
         $('#find-products').select2({
@@ -346,10 +321,13 @@
             window.location.href = data.url;
         });
 
-        $('.subProduct-select').on('change', function() {
-            var productId = $(this).data('product-id');
+        $('.modelSubProduct-select').change(function() {
+            // Получаем ID продукта и выбранную модель подтипа продукта
+            var productId = $(this).attr('id').split('_').pop();
             var selectedOption = $(this).find('option:selected');
             var price = selectedOption.data('price');
+
+            // Обновляем цену на странице
             $('#price-sub-product-' + productId).text(price + ' ₴');
         });
 

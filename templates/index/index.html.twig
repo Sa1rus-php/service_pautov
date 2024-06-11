@@ -106,6 +106,12 @@
                                 <a class="nav-link me-4" href="{{ path('frequent_questions') }}">Часті питання</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link me-4" href="#footer">Контакти</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link me-4" href="{{ path('app_cart') }}">Кошик</a>
+                            </li>
+                            <li class="nav-item">
                                 <div class="user-items ps-5">
                                     <ul class="d-flex justify-content-end list-unstyled">
                                         <li class="pe-3">
@@ -143,8 +149,8 @@
                             </svg>
                         </div>
                         <div class="icon-box-content">
-                            <h3 class="card-title text-uppercase text-dark">Безкоштовна доставка</h3>
-                            <p>Акція! На безкоштовну доставку!</p>
+                            <h3 class="card-title text-uppercase text-dark">Безкоштовна діагностика</h3>
+                            <p>Акція! На безкоштовну діагностику!</p>
                         </div>
                     </div>
                 </div>
@@ -178,6 +184,81 @@
         </div>
     </section>
     <hr>
+    <div class="container px-4 py-5" id="custom-cards">
+        <h2 class="pb-2 border-bottom">Відгуки провідних компаній світу з якими співпрацюємо</h2>
+        <div class="owl-carousel owl-theme">
+            <div class="item item1">
+                <div class="card" style="height: 230px">
+                    <img src="https://www.freepnglogos.com/uploads/apple-logo-png/file-apple-logo-black-svg-wikimedia-commons-1.png" alt="" class="card-logo">
+                    <div class="card-body">
+                        <p class="card-text text-center text-secondary">Неймовірний сервіс! Вирішення технічних питань завжди на найвищому рівні.</p>
+                        <h4 class="card-name text-uppercase text-center fs-5">Apple Inc.</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item item2">
+                <div class="card" style="height: 230px">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Samsung_Electronics_logo_%28english%29.svg/1280px-Samsung_Electronics_logo_%28english%29.svg.png" alt="" class="card-logo">
+                    <div class="card-body">
+                        <p class="card-text text-center text-secondary">Чудовий сервіс та оперативна підтримка. Рекомендую всім!</p>
+                        <h4 class="card-name text-uppercase text-center fs-5">Samsung Electronics</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item item3">
+                <div class="card" style="height: 230px">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/Sony_logo.svg" alt="" class="card-logo">
+                    <div class="card-body">
+                        <p class="card-text text-center text-secondary">Професійний підхід та якісне обслуговування. Завжди задоволені результатом.</p>
+                        <h4 class="card-name text-uppercase text-center fs-5">Sony Corporation</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item item4">
+                <div class="card" style="height: 230px">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Panasonic_logo_%28Blue%29.svg/1280px-Panasonic_logo_%28Blue%29.svg.png" alt="" class="card-logo">
+                    <div class="card-body">
+                        <p class="card-text text-center text-secondary">Високий рівень сервісу та завжди привітний персонал.</p>
+                        <h4 class="card-name text-uppercase text-center fs-5">Panasonic</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item item5">
+                <div class="card" style="height: 230px">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/LG_Electronics_logo_2015_%28english%29.svg/2560px-LG_Electronics_logo_2015_%28english%29.svg.png" alt="" class="card-logo">
+                    <div class="card-body">
+                        <p class="card-text text-center text-secondary">Завжди швидко та якісно. Ми довіряємо тільки цьому сервісу.</p>
+                        <h4 class="card-name text-uppercase text-center fs-5">LG Electronics</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item item6">
+                <div class="card" style="height: 230px">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Toshiba_logo.svg/2560px-Toshiba_logo.svg.png" alt="" class="card-logo">
+                    <div class="card-body">
+                        <p class="card-text text-center text-secondary">Високий рівень технічної підтримки. Завжди можемо розраховувати на швидке вирішення проблем.</p>
+                        <h4 class="card-name text-uppercase text-center fs-5">Toshiba</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item item7">
+                <div class="card" style="height: 230px">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Dell_Technologies_logo.svg/2560px-Dell_Technologies_logo.svg.png" alt="" class="card-logo">
+                    <div class="card-body">
+                        <p class="card-text text-center text-secondary">Професійний сервіс та чудова підтримка клієнтів. Дуже задоволені співпрацею.</p>
+                        <h4 class="card-name text-uppercase text-center fs-5">Dell Technologies</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {% for category in categories %}
     <section id="products" class="product-store position-relative padding-large no-padding-top">
         <div class="container">
@@ -207,7 +288,8 @@
                     <div class="modal fade" id="order-{{ product.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
-                                <form action="{{ path('create_order') }}" method="post">
+                                <form action="{{ path('app_cart_add') }}" method="post">
+                                    <input hidden="hidden" name="product_id" value="{{ product.id }}">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel">Запис на ремонт</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -219,15 +301,19 @@
                                                 <option value="" hidden="hidden">Оберіть</option>
                                                 {% for subProduct in subProducts %}
                                                     {% if(product.id == subProduct.product.id) %}
-                                                        <option value="{{ subProduct.id }}" data-price="{{ subProduct.price }}">{{ subProduct.name }}</option>
+                                                        <option value="{{ subProduct.id }}" data-subProductId="{{ subProduct.id }}" data-price="{{ subProduct.price }}">{{ subProduct.name }}</option>
                                                     {% endif %}
                                                 {% endfor %}
                                             </select>
                                         </div>
                                         <div class="row-cols-1">
-                                            <label for="order_date_{{ product.id }}">На коли ви хочете записатися на ремонт?</label>
-                                            <input id="order_date_{{ product.id }}" class="product_item_date" name="order_date" type="datetime-local">
-                                            <input name="product_id" value="{{ product.id }}" hidden="hidden">
+                                            <label for="modelSubProduct_id_{{ product.id }}">Виберіть модель під продукту!</label>
+                                            <select class="form-select modelSubProduct-select" name="modelSubProduct_id" id="modelSubProduct_id_{{ product.id }}" required>
+                                                <option value="" hidden="hidden">Оберіть</option>
+                                                {% for modelSubProduct in modelSubProducts %}
+                                                    <option value="{{ modelSubProduct.id }}" data-subProductId="{{ modelSubProduct.subProduct.id }}" data-price="{{ modelSubProduct.price }}">{{ modelSubProduct.name }}</option>
+                                                {% endfor %}
+                                            </select>
                                         </div>
                                         <div class="row-cols-1">
                                             <label for="order_date_{{ product.id }}">Ціна:</label>
@@ -236,7 +322,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
-                                        <button type="submit" class="btn btn-primary">Записатися</button>
+                                        <button type="submit" class="btn btn-primary">Добавити у корзину</button>
                                     </div>
                                 </form>
                             </div>
@@ -284,7 +370,9 @@
                         <div class="col-lg-3 col-sm-6 pb-3">
                             <div class="footer-menu">
                                 <h3>Pautov service</h3>
-                                <p>Сервіс твоєї мрії!</p>
+                                <p>Адреса: проспект Героїв Харкова, 274</p>
+                                <p>Графік роботи: ПН-ПТ з 8 до 18</p>
+                                <p>Робочий телефон: +380 99 999 9999</p>
                             </div>
                         </div>
                         <div class="col-lg-2 col-sm-6 pb-3">
@@ -319,75 +407,36 @@
         <hr>
     </footer>
     <script>
+        $(document).ready(function() {
 
-        let occupiedDates = {};
+            $('.modelSubProduct-select').prop('disabled', true);
 
-        function fetchOccupiedDates() {
-            return $.ajax({
-                url: '/get-time-slots',
-                method: 'POST',
-                data: {},
-                success: function(response) {
-                    occupiedDates = response;
-                },
-                error: function(xhr, status, error) {
-                    console.error("Failed to fetch occupied dates: ", error);
+            // Когда выбран подтип продукта
+            $('.subProduct-select').change(function() {
+                // Получаем ID продукта и выбранный подтип продукта
+                var productId = $(this).data('product-id');
+                var selectedSubProductId = $(this).val();
+
+                // Находим соответствующий select для моделей подтипов продуктов
+                var modelSubProductSelect = $('#modelSubProduct_id_' + productId);
+
+                if (selectedSubProductId) {
+                    // Делаем select для моделей подтипов доступным
+                    modelSubProductSelect.prop('disabled', false);
+
+                    // Скрываем все опции
+                    modelSubProductSelect.find('option').hide();
+
+                    // Показываем опции, соответствующие выбранному подтипу продукта
+                    modelSubProductSelect.find('option[data-subproductid="' + selectedSubProductId + '"]').show();
+
+                    // Обновляем select, чтобы скрытые опции не отображались как выбранные
+                    modelSubProductSelect.val('');
+                } else {
+                    // Если ничего не выбрано, делаем select для моделей подтипов недоступным
+                    modelSubProductSelect.prop('disabled', true);
                 }
             });
-        }
-
-        function disableTimeRanges(date) {
-            const selectedDate = date.toISOString().split('T')[0];
-            if (occupiedDates[selectedDate]) {
-                const hours = date.getHours().toString().padStart(2, '0');
-                const minutes = date.getMinutes().toString().padStart(2, '0');
-                const currentTime = `${hours}:${minutes}`;
-
-                for (const range of occupiedDates[selectedDate]) {
-                    if (currentTime >= range.start && currentTime <= range.end) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        $(document).ready(function() {
-            fetchOccupiedDates().then(function() {
-                flatpickr.localize(flatpickr.l10ns.ru);
-                flatpickr(".product_item_date", {
-                    enableTime: true,
-                    dateFormat: "Y-m-d H:i",
-                    time_24hr: true,
-                    minTime: "08:00",
-                    maxTime: "18:00",
-                    minuteIncrement: 10,
-                    minDate: 'today',
-                    "locale": {
-                        "firstDayOfWeek": 1,
-                    },
-                    disable: [
-                        function(date) {
-                            return disableTimeRanges(date);
-                        },
-                        function(date) {
-                            return (date.getDay() === 0 || date.getDay() === 6);
-                        }
-                    ],
-                    onChange: function(selectedDates, dateStr, instance) {
-                        if (selectedDates.length > 0) {
-                            const selectedDate = selectedDates[0];
-                            if (disableTimeRanges(selectedDate)) {
-                                toastr.error('Обраний час недоступний. Будь ласка, виберіть інший час.');
-                                instance.clear();
-                            }
-                        }
-                    }
-                });
-            });
-        });
-
-        $(document).ready(function() {
 
             $('#find-products').select2({
                 placeholder: 'Пошук продуктів',
@@ -431,13 +480,33 @@
             });
 
 
-            $('.subProduct-select').on('change', function() {
-                var productId = $(this).data('product-id');
+            $('.modelSubProduct-select').change(function() {
+                // Получаем ID продукта и выбранную модель подтипа продукта
+                var productId = $(this).attr('id').split('_').pop();
                 var selectedOption = $(this).find('option:selected');
                 var price = selectedOption.data('price');
+
+                // Обновляем цену на странице
                 $('#price-sub-product-' + productId).text(price + ' ₴');
             });
 
+            $('.owl-carousel').owlCarousel({
+                loop:true,
+                margin:10,
+
+                nav:true,
+                responsive:{
+                    0:{
+                        items:2
+                    },
+                    600:{
+                        items:3
+                    },
+                    1000:{
+                        items:4
+                    }
+                }
+            });
 
         });
     </script>

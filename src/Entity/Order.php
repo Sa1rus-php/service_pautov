@@ -47,6 +47,10 @@ class Order implements TimestampableInterface
     #[ORM\Column]
     private ?bool $status = null;
 
+    #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?ModelSubProduct $modelSubProduct = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -144,6 +148,18 @@ class Order implements TimestampableInterface
     public function setStatus(bool $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getModelSubProduct(): ?ModelSubProduct
+    {
+        return $this->modelSubProduct;
+    }
+
+    public function setModelSubProduct(?ModelSubProduct $modelSubProduct): static
+    {
+        $this->modelSubProduct = $modelSubProduct;
 
         return $this;
     }

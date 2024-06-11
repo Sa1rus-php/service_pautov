@@ -83,14 +83,33 @@
                     <div class="offcanvas-body">
                         <ul id="navbar" class="navbar-nav text-uppercase justify-content-end align-items-center flex-grow-1 pe-3">
                             <li class="nav-item">
-                                <a class="nav-link me-4" href="{{ path('app_index') }}">Головна сторінка</a>
+                                <a class="nav-link me-4" href="{{ path('app_index') }}  ">Головна сторінка</a>
                             </li>
                             <li class="nav-item">
                                 <select class="form-select" id="find-products" style="width: 300px;">
                                 </select>
                             </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="categorydrop" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Категорії
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="categorydrop">
+                                    {% for category in categories %}
+                                        <li><a class="dropdown-item" href="{{ path('category', {id: category.id}) }}">{{ category.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
                             <li class="nav-item">
-                                <a class="nav-link me-4" href="{{ path('app_index') }}#footer">Контакти</a>
+                                <a class="nav-link me-4" href="{{ path('app_index') }}#products">Пропозиції</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link me-4" href="{{ path('app_index') }}#testimonials">Відгуки</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link me-4" href="{{ path('frequent_questions') }}">Часті питання</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link me-4" href="#footer">Контакти</a>
                             </li>
                             <li class="nav-item">
                                 <div class="user-items ps-5">
@@ -119,41 +138,106 @@
             </div>
         </nav>
     </header>
-    <section class="padding-large">
-        <div class="row justify-content-center" style="padding-top: 50px">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        Чи працюєте ви за безготівковим розрахунком?
+    <section class="h-100 gradient-custom" style="padding-top: 100px">
+        <div class="container py-5">
+            <div class="row d-flex justify-content-center my-4">
+                <div class="col-md-8">
+                    <div class="card mb-4">
+                        <div class="card-header py-3">
+                            <h5 class="mb-0">Кошик</h5>
+                        </div>
+                        <div class="card-body">
+                            {% for item in items %}
+                            <div class="row">
+                                <div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
+                                    <div class="bg-image hover-overlay hover-zoom ripple rounded">
+                                        <img src="{{ asset('images/products/') }}{{ item.product.imageName }}"
+                                             class="w-100" />
+                                        <a href="#!">
+                                            <div class="mask" style="background-color: rgba(251, 251, 251, 0.2)"></div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
+                                    <p><strong>Продукт: {{ item.product.name }}</strong></p>
+                                    <p>Під продукт: {{ item.subProduct.name }}</p>
+                                    <p>Модель під продукт: {{ item.modelSubProduct.name }}</p>
+                                    <p>
+                                        <strong>₴{{ item.price }}</strong>
+                                    </p>
+                                    <a href="{{ path('app_cart_remove', {'key': item.key}) }}" class="btn btn-primary"> Видалити із кошику</a>
+                                </div>
+                            </div>
+                                <hr>
+                            {% endfor %}
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <blockquote class="blockquote mb-0">
-                            <p>Так. Ви можете оплатити вашу покупку за допомогою карт Visa або Mastercard, є можливість оплати за допомогою Apple Pay і Google Pay.</p>
-                        </blockquote>
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <p><strong>На коли бажаєте записатися ?</strong></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <p><strong>Оберіть дату </strong></p>
+                                </div>
+                                <div class="col-md-2">
+                                    <input id="order_date" class="product_item_date" name="order_date" type="datetime-local">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <p><strong>Оберіть годину</strong></p>
+                                </div>
+                                <div class="col-sm-3">
+                                    <select class="form-select mb-4 mb-lg-0" id="time_date">
+                                        <option selected hidden="hidden">Час запису</option>
+                                        <option value="08:00">08:00</option>
+                                        <option value="09:00">09:00</option>
+                                        <option value="10:00">10:00</option>
+                                        <option value="11:00">11:00</option>
+                                        <option value="12:00">12:00</option>
+                                        <option value="13:00">13:00</option>
+                                        <option value="14:00">14:00</option>
+                                        <option value="15:00">15:00</option>
+                                        <option value="16:00">16:00</option>
+                                        <option value="17:00">17:00</option>
+                                        <option value="18:00">18:00</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="row justify-content-center" style="padding-top: 50px">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        Чи є гарантія на ремонтні роботи ?
-                    </div>
-                    <div class="card-body">
-                        <blockquote class="blockquote mb-0">
-                            <p>Ми відповідаємо за якість своєї роботи, тому надаємо гарантію до 6 місяців на ремонтні послуги.
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-header py-3">
+                            <h5 class="mb-0">Підсумок</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                                    <div>
+                                        <strong>Загальна сума</strong>
+                                    </div>
+                                    <span><strong>₴{{ totalPrice }}</strong></span>
+                                </li>
+                            </ul>
 
-                                Тому, якщо раптом після ремонту техніки щось пішло не так або у тебе з'явилися якісь сумніви, відразу ж звертайся до нас — ми все перевіримо і, якщо буде потрібно, виправимо.
-
-                                Але, виходячи з нашого досвіду, повторні звернення трапляються вкрай рідко, так як ми завжди робимо все максимально якісно і на совість.</p>
-                        </blockquote>
+                            <button id="create_order" type="button" class="btn btn-primary btn-lg btn-block">
+                                Заказати послугу
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <footer id="footer" class="overflow-hidden">
+    <footer id="footer" class="overflow-hidden" style="padding-top: 50px">
         <div class="container">
             <div class="row">
                 <div class="footer-top-area">
@@ -171,13 +255,13 @@
                                 <h5 class="widget-title pb-2">Швидкі посилання</h5>
                                 <ul class="menu-list list-unstyled text-uppercase">
                                     <li class="menu-item pb-2">
-                                        <a href="{{ path('app_index') }}#">Головна</a>
+                                        <a href="#">Головна</a>
                                     </li>
                                     <li class="menu-item pb-2">
-                                        <a href="{{ path('app_index') }}#products">Пропозиції</a>
+                                        <a href="#products">Пропозиції</a>
                                     </li>
                                     <li class="menu-item pb-2">
-                                        <a href="{{ path('app_index') }}#testimonials">Відгуки</a>
+                                        <a href="#testimonials">Відгуки</a>
                                     </li>
                                 </ul>
                             </div>
@@ -198,45 +282,165 @@
         <hr>
     </footer>
     <script>
-        $('#find-products').select2({
-            placeholder: 'Пошук продуктів',
-            ajax: {
-                url: '/search-products',
-                method: 'POST',
-                dataType: 'json',
-                delay: 250,
-                data: function(params) {
-                    return {
-                        word: params.term
-                    };
+
+        $(document).ready(function() {
+            flatpickr.localize(flatpickr.l10ns.ru);
+            flatpickr(".product_item_date", {
+                enableTime: false,
+                dateFormat: "Y-m-d",
+                time_24hr: true,
+                minuteIncrement: 10,
+                minDate: 'today',
+                "locale": {
+                    "firstDayOfWeek": 1,
                 },
-                processResults: function(data) {
-                    return {
-                        results: data.items.map(function(item) {
-                            return {
-                                id: item.id,
-                                text: item.name,
-                                url: '/product/' + item.id
-                            };
-                        })
-                    };
-                },
-                cache: true
-            },
-            minimumInputLength: 1,
-            templateResult: function(data) {
-                if (data.loading) return data.text;
-                var $container = $('<a>').attr('href', data.url).text(data.text);
-                return $container;
-            },
-            templateSelection: function(data) {
-                return data.text;
-            }
+                disable: [
+                    function(date) {
+                        return (date.getDay() === 0 || date.getDay() === 6);
+                    }
+                ],
+            });
         });
 
-        $('#find-products').on('select2:select', function(e) {
-            var data = e.params.data;
-            window.location.href = data.url;
+        $(document).ready(function() {
+
+            $('#create_order').click(function () {
+                $.ajax({
+                    url: '/create-order',
+                    data: {
+                        date: $('#order_date').val(),
+                        time: $('#time_date').val()
+                    },
+                    type: 'POST',
+                    success: function(data) {
+                        toastr.success('Замовлення успішно створено');
+                        setInterval(function() {
+                            window.location.href = '/';
+                        }, 1000);
+                    },
+                    error: function (data) {
+                        if (data.status === 401){
+                            toastr.error('Для замовлення послуги потрібно авторизуватися');
+                        }
+                        if (data.status === 404) {
+                            toastr.error('Оберіть продукт та підпродукт для замовлення');
+                        }
+                        if (data.status === 406) {
+                            toastr.error('Будь ласка, виберіть дату на коли записатися.');
+                        }
+                    }
+                });
+            });
+
+            $('#order_date').change(function() {
+                var selectedDate = $(this).val();
+                $.ajax({
+                    url: '/get-time-slots',
+                    type: 'GET',
+                    success: function(data) {
+                        updateAvailableTimes(data, selectedDate);
+                    }
+                });
+            });
+
+            function updateAvailableTimes(data, selectedDate) {
+                var occupiedSlots = data[selectedDate] || [];
+                var availableTimes = [
+                    "08:00", "09:00", "10:00", "11:00", "12:00",
+                    "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"
+                ];
+
+                // Функция для проверки занятости временного интервала
+                function isOccupied(time) {
+                    for (var i = 0; i < occupiedSlots.length; i++) {
+                        var start = occupiedSlots[i].start;
+                        var end = occupiedSlots[i].end;
+                        if (time >= start && time < end) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                // Очищаем селект и добавляем доступные временные интервалы
+                var $timeSelect = $('#time_date');
+                $timeSelect.empty();
+                $timeSelect.append('<option selected hidden="hidden">Час запису</option>');
+                availableTimes.forEach(function(time) {
+                    if (!isOccupied(time)) {
+                        $timeSelect.append('<option value="' + time + '">' + time + '</option>');
+                    }
+                });
+            }
+
+
+            $('#find-products').select2({
+                placeholder: 'Пошук продуктів',
+                ajax: {
+                    url: '/search-products',
+                    method: 'POST',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            word: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: data.items.map(function(item) {
+                                return {
+                                    id: item.id,
+                                    text: item.name,
+                                    url: '/product/' + item.id
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 1,
+                templateResult: function(data) {
+                    if (data.loading) return data.text;
+                    var $container = $('<a>').attr('href', data.url).text(data.text);
+                    return $container;
+                },
+                templateSelection: function(data) {
+                    return data.text;
+                }
+            });
+
+            $('#find-products').on('select2:select', function(e) {
+                var data = e.params.data;
+                window.location.href = data.url;
+            });
+
+
+            $('.subProduct-select').on('change', function() {
+                var productId = $(this).data('product-id');
+                var selectedOption = $(this).find('option:selected');
+                var price = selectedOption.data('price');
+                $('#price-sub-product-' + productId).text(price + ' ₴');
+            });
+
+            $('.owl-carousel').owlCarousel({
+                loop:true,
+                margin:10,
+
+                nav:true,
+                responsive:{
+                    0:{
+                        items:2
+                    },
+                    600:{
+                        items:3
+                    },
+                    1000:{
+                        items:4
+                    }
+                }
+            });
+
         });
     </script>
 {% endblock %}

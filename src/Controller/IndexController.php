@@ -3,12 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Entity\ModelSubProduct;
 use App\Entity\Order;
 use App\Entity\Product;
 use App\Entity\Review;
 use App\Entity\SubProducts;
 use App\Entity\User;
 use App\Repository\ReviewRepository;
+use App\Utils\Cart;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -16,6 +18,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class IndexController extends AbstractController
@@ -27,6 +30,7 @@ class IndexController extends AbstractController
         $categories = $entityManager->getRepository(Category::class)->findBy(['status' => true]);
         $products = $entityManager->getRepository(Product::class)->findBy(['status' => true]);
         $subProducts = $entityManager->getRepository(SubProducts::class)->findBy(['status' => true]);
+        $modelSubProducts = $entityManager->getRepository(ModelSubProduct::class)->findBy(['status' => true]);
 
         if ($this->getUser() !== null){
             $auth = true;
@@ -39,7 +43,8 @@ class IndexController extends AbstractController
             'categories' => $categories,
             'products' => $products,
             'auth' => $auth,
-            'subProducts' => $subProducts
+            'subProducts' => $subProducts,
+            'modelSubProducts' => $modelSubProducts
         ]);
     }
 
@@ -51,6 +56,7 @@ class IndexController extends AbstractController
         $reviews = $entityManager->getRepository(Review::class)->findBy(['user_id' => $user->getId()]);
         $products = $entityManager->getRepository(Product::class)->findBy(['status' => true]);
         $subProducts = $entityManager->getRepository(SubProducts::class)->findBy(['status' => true]);
+        $modelSubProducts = $entityManager->getRepository(ModelSubProduct::class)->findBy(['status' => true]);
 
         return $this->render('index/profile.html.twig',
             [
@@ -58,36 +64,55 @@ class IndexController extends AbstractController
                 'orders' => $orders,
                 'reviews' => $reviews,
                 'products' => $products,
-                'subProducts' => $subProducts
+                'subProducts' => $subProducts,
+                'modelSubProducts' => $modelSubProducts
             ]
         );
     }
 
     #[Route('/create-order', name: 'create_order', methods: 'post')]
-    public function createOrder(Request $request, ManagerRegistry $doctrine, EntityManagerInterface $entityManager): Response
+    public function createOrder(Request $request, SessionInterface $session, ManagerRegistry $doctrine, EntityManagerInterface $entityManager): Response
     {
+        if (!$this->getUser()) {
+            return new Response(json_encode([]), Response::HTTP_UNAUTHORIZED, ['Content-Type' => 'application/json']);
+
+        }
+
         $params = $request->request->all();
 
-        if ($params['order_date'] && $params['product_id'] && $this->getUser()) {
-            $product = $entityManager->getRepository(Product::class)->findOneBy(['id' => $params['product_id']]);
-            $subProduct = $entityManager->getRepository(SubProducts::class)->findOneBy(['id' => $params['subProduct_id']]);
+        if (!isset($params['date']) && !isset($params['time'])) {
+            return new Response(json_encode([]), Response::HTTP_NOT_ACCEPTABLE, ['Content-Type' => 'application/json']);
+        }
+
+        $cart = new Cart($session);
+        $cartItems = $cart->getItems();
+
+        if (empty($cartItems)) {
+            return new Response(json_encode([]), Response::HTTP_NOT_FOUND, ['Content-Type' => 'application/json']);
+        }
+
+        foreach ($cartItems as $key => $item) {
+            $product = $entityManager->getRepository(Product::class)->findOneBy(['id' => $item->getProductId($key)]);
+            $subProduct = $entityManager->getRepository(SubProducts::class)->findOneBy(['id' => $item->getSubProductId($key)]);
+            $modelSubProduct = $entityManager->getRepository(ModelSubProduct::class)->findOneBy(['id' => $item->getModelSubProductId($key)]);
 
             $order = new Order();
             $order->setUser($this->getUser());
             $order->setProduct($product);
             $order->setSubProduct($subProduct);
-            $date = new DateTime($params['order_date']);
+            $order->setModelSubProduct($modelSubProduct);
+            $date = new DateTime($params['date'] . ' ' . $params['time'] . ':00');
             $order->setOrderDate($date);
             $order->setStatus(false);
 
             $entityManager = $doctrine->getManager();
             $entityManager->persist($order);
             $entityManager->flush();
-        } else {
-            return $this->redirect('/login');
+
+            $cart->removeItem($key);
         }
 
-        return $this->redirect('/');
+        return new Response(json_encode([]), Response::HTTP_OK, ['Content-Type' => 'application/json']);
     }
 
     #[Route('/update-order', name: 'update_order', methods: 'post')]
@@ -98,11 +123,13 @@ class IndexController extends AbstractController
         if ($params['orderId'] && $params['productId'] && $params['subProductId'] && $params['orderDate'] && $this->getUser()) {
             $product = $entityManager->getRepository(Product::class)->findOneBy(['id' => $params['productId']]);
             $subProduct = $entityManager->getRepository(SubProducts::class)->findOneBy(['id' => $params['subProductId']]);
+            $modelSubProduct = $entityManager->getRepository(ModelSubProduct::class)->findOneBy(['id' => $params['modelSubProductId']]);
 
             $order = $entityManager->getRepository(Order::class)->findOneBy(['id' => $params['orderId']]);
             $order->setProduct($product);
             $order->setSubProduct($subProduct);
-            $date = new DateTime($params['orderDate']);
+            $order->setModelSubProduct($modelSubProduct);
+            $date = new DateTime($params['orderDate'] . ' ' . $params['orderTime'] . ':00');
             $order->setOrderDate($date);
 
             $entityManager = $doctrine->getManager();
@@ -187,14 +214,15 @@ class IndexController extends AbstractController
         $category = $entityManager->getRepository(Category::class)->findOneBy(['status' => true, 'id' => $id]);
         $products = $entityManager->getRepository(Product::class)->findBy(['status' => true, 'category_id' => $id]);
         $subProducts = $entityManager->getRepository(SubProducts::class)->findBy(['status' => true]);
-
+        $modelSubProducts = $entityManager->getRepository(ModelSubProduct::class)->findBy(['status' => true]);
 
         return $this->render('index/category.html.twig', [
             'auth' => $auth,
             'products' => $products,
             'categories' => $categories,
             'category' => $category,
-            'subProducts' => $subProducts
+            'subProducts' => $subProducts,
+            'modelSubProducts' => $modelSubProducts
         ]);
     }
 
@@ -210,12 +238,16 @@ class IndexController extends AbstractController
         $categories = $entityManager->getRepository(Category::class)->findBy(['status' => true]);
         $product = $entityManager->getRepository(Product::class)->findOneBy(['id' => $id]);
         $subProducts = $entityManager->getRepository(SubProducts::class)->findBy(['status' => true]);
+        $modelSubProducts = $entityManager->getRepository(ModelSubProduct::class)->findBy(['status' => true]);
+
 
         return $this->render('index/product.html.twig', [
             'auth' => $auth,
             'product' => $product,
             'categories' => $categories,
-            'subProducts' => $subProducts
+            'subProducts' => $subProducts,
+            'modelSubProducts' => $modelSubProducts
+
         ]);
     }
 
@@ -237,7 +269,7 @@ class IndexController extends AbstractController
         );
     }
 
-    #[Route('/get-time-slots', name: 'get_time_slots', methods: ['POST'])]
+    #[Route('/get-time-slots', name: 'get_time_slots', methods: ['GET'])]
     public function getTimeSlots(EntityManagerInterface $entityManager): Response
     {
         $orders = $entityManager->getRepository(Order::class)->findBy(['status' => false]);

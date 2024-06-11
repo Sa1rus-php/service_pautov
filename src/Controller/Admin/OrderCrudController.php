@@ -27,15 +27,16 @@ class OrderCrudController extends AbstractCrudController
         $user = AssociationField::new('user');
         $product = AssociationField::new('product');
         $subProduct = AssociationField::new('subProduct');
+        $modelSubProduct = AssociationField::new('modelSubProduct');
         $status = BooleanField::new('status');
 
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $user, $product, $subProduct, $status];
+            return [$id, $user, $product, $subProduct, $modelSubProduct, $status];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $user, $product, $subProduct, $status];
+            return [$id, $user, $product, $subProduct, $modelSubProduct, $status];
         } else {
-            return [$id, $user, $product, $subProduct, $status];
+            return [$id, $user, $product, $subProduct, $modelSubProduct, $status];
         }
     }
 }

@@ -35,9 +35,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Timesta
     #[ORM\Column]
     private array $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column]
     private ?string $password = null;
 

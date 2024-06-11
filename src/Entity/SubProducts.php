@@ -9,20 +9,18 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Contract\Entity\TimestampableInterface;
 use Knp\DoctrineBehaviors\Model\Timestampable\TimestampableTrait;
-use Symfony\Component\HttpFoundation\File\File;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: SubProductsRepository::class)]
-
 class SubProducts implements TimestampableInterface
 {
     use TimestampableTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\ManyToOne(inversedBy: 'subProducts')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
 
@@ -38,39 +36,22 @@ class SubProducts implements TimestampableInterface
     #[ORM\Column]
     private ?bool $status = null;
 
+    #[ORM\OneToMany(mappedBy: 'subProduct', targetEntity: ModelSubProduct::class, orphanRemoval: true)]
+    private Collection $modelSubProducts;
+
     public function __construct()
     {
-        $this->product_id = new ArrayCollection();
-        $this->orders = new ArrayCollection();
-
+        $this->modelSubProducts = new ArrayCollection();
     }
 
     public function __toString(): string
     {
-        return $this->getName();
+        return $this->name;
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return Collection<int, Product>
-     */
-    public function getProductId(): Collection
-    {
-        return $this->product_id;
-    }
-
-    public function addProductId(Product $productId): static
-    {
-        if (!$this->product_id->contains($productId)) {
-            $this->product_id->add($productId);
-            $productId->setSubproduct($this);
-        }
-
-        return $this;
     }
 
     public function getProduct(): ?Product
@@ -81,18 +62,6 @@ class SubProducts implements TimestampableInterface
     public function setProduct(?Product $product): static
     {
         $this->product = $product;
-
-        return $this;
-    }
-
-    public function removeProductId(Product $productId): static
-    {
-        if ($this->product_id->removeElement($productId)) {
-            // set the owning side to null (unless already changed)
-            if ($productId->getSubproduct() === $this) {
-                $productId->setSubproduct(null);
-            }
-        }
 
         return $this;
     }
@@ -121,12 +90,12 @@ class SubProducts implements TimestampableInterface
         return $this;
     }
 
-    public function getExecution(): ?string
+    public function getExecution(): ?int
     {
         return $this->execution;
     }
 
-    public function setExecution(string $execution): static
+    public function setExecution(int $execution): static
     {
         $this->execution = $execution;
 
@@ -141,6 +110,36 @@ class SubProducts implements TimestampableInterface
     public function setStatus(bool $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ModelSubProduct>
+     */
+    public function getModelSubProducts(): Collection
+    {
+        return $this->modelSubProducts;
+    }
+
+    public function addModelSubProduct(ModelSubProduct $modelSubProduct): static
+    {
+        if (!$this->modelSubProducts->contains($modelSubProduct)) {
+            $this->modelSubProducts->add($modelSubProduct);
+            $modelSubProduct->setSubProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeModelSubProduct(ModelSubProduct $modelSubProduct): static
+    {
+        if ($this->modelSubProducts->removeElement($modelSubProduct)) {
+            // set the owning side to null (unless already changed)
+            if ($modelSubProduct->getSubProduct() === $this) {
+                $modelSubProduct->setSubProduct(null);
+            }
+        }
 
         return $this;
     }

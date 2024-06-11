@@ -74,6 +74,7 @@
                                 <tr>
                                     <th scope="col">Назва продукту</th>
                                     <th scope="col">Назва під продукту</th>
+                                    <th scope="col">Назва моделі під продукту</th>
                                     <th scope="col">Ціна</th>
                                     <th scope="col">Дата запису</th>
                                     <th scope="col">Приблизні години очікування</th>
@@ -104,11 +105,33 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <span class="product_span_price_item">{{ order.subproduct.price }}</span>
+                                                    <span class="product_span_item_modelsubproduct">{{ order.modelsubproduct.name }}</span>
+                                                    <select class="form-select product_select_modelsubproducts" name="subProduct_id" style="display: none;">
+                                                        {% for modelSubProduct in modelSubProducts %}
+                                                            <option value="{{ modelSubProduct.id }}" data-subproductid="{{ modelSubProduct.subProduct.id }}" data-price="{{ modelSubProduct.price }}">{{ modelSubProduct.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <span class="product_span_price_item">{{ order.modelsubproduct.price }}</span>
                                                 </td>
                                                 <td>
                                                     <span class="product_span_item_date">{{ order.orderDate.format('Y-m-d H:i:s') }}</span>
                                                     <input class="product_item_date" name="order_date" type="datetime-local" style="display: none;">
+                                                    <select class="form-select mb-4 mb-lg-0 time_date" style="display: none;">
+                                                        <option selected hidden="hidden">Час запису</option>
+                                                        <option value="08:00">08:00</option>
+                                                        <option value="09:00">09:00</option>
+                                                        <option value="10:00">10:00</option>
+                                                        <option value="11:00">11:00</option>
+                                                        <option value="12:00">12:00</option>
+                                                        <option value="13:00">13:00</option>
+                                                        <option value="14:00">14:00</option>
+                                                        <option value="15:00">15:00</option>
+                                                        <option value="16:00">16:00</option>
+                                                        <option value="17:00">17:00</option>
+                                                        <option value="18:00">18:00</option>
+                                                    </select>
                                                 </td>
                                                 <td>
                                                     <span class="">{{ order.subproduct.execution }}</span>
@@ -178,72 +201,16 @@
 
     <script>
 
-        let occupiedDates = {};
-
-        function fetchOccupiedDates() {
-            return $.ajax({
-                url: '/get-time-slots',
-                method: 'POST',
-                data: {},
-                success: function(response) {
-                    occupiedDates = response;
-                },
-                error: function(xhr, status, error) {
-                    console.error("Failed to fetch occupied dates: ", error);
+        function filterModelSubproducts($row) {
+            $row.find('.product_select_modelsubproducts option').each(function() {
+                const subProductId = $(this).data('subproductid');
+                if (subProductId != $('.product_select_subproducts option:selected').val()) {
+                    $(this).attr('hidden', 'hidden').attr('disabled', 'disabled').prop('selected', false);
+                } else {
+                    $(this).removeAttr('hidden').removeAttr('disabled').prop('selected', true);
                 }
             });
         }
-
-        function disableTimeRanges(date) {
-            const selectedDate = date.toISOString().split('T')[0];
-            if (occupiedDates[selectedDate]) {
-                const hours = date.getHours().toString().padStart(2, '0');
-                const minutes = date.getMinutes().toString().padStart(2, '0');
-                const currentTime = `${hours}:${minutes}`;
-
-                for (const range of occupiedDates[selectedDate]) {
-                    if (currentTime >= range.start && currentTime <= range.end) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        $(document).ready(function() {
-            fetchOccupiedDates().then(function() {
-                flatpickr.localize(flatpickr.l10ns.ru);
-                flatpickr(".product_item_date", {
-                    enableTime: true,
-                    dateFormat: "Y-m-d H:i",
-                    time_24hr: true,
-                    minTime: "08:00",
-                    maxTime: "18:00",
-                    minuteIncrement: 10,
-                    minDate: 'today',
-                    "locale": {
-                        "firstDayOfWeek": 1,
-                    },
-                    disable: [
-                        function(date) {
-                            return disableTimeRanges(date);
-                        },
-                        function(date) {
-                            return (date.getDay() === 0 || date.getDay() === 6);
-                        }
-                    ],
-                    onChange: function(selectedDates, dateStr, instance) {
-                        if (selectedDates.length > 0) {
-                            const selectedDate = selectedDates[0];
-                            if (disableTimeRanges(selectedDate)) {
-                                toastr.error('Обраний час недоступний. Будь ласка, виберіть інший час.');
-                                instance.clear();
-                            }
-                        }
-                    }
-                });
-            });
-        });
 
 
         $(document).ready(function() {
@@ -253,12 +220,20 @@
                 e.preventDefault();
                 const $row = $(this).closest('tr');
 
-                $row.find('.product_span_item_product, .product_span_item_subproduct, .product_span_item_date').hide();
-                $row.find('.product_select_item_products, .product_select_subproducts, .product_item_date').show();
+                $row.find('.product_span_item_product, .product_span_item_subproduct, .product_span_item_date, .product_span_item_modelsubproduct').hide();
+                $row.find('.product_select_item_products, .product_select_subproducts, .product_item_date, .time_date').show();
 
                 $row.find('.btn-edit-product, .btn-delete-product').hide();
                 $row.find('.btn-save-product').show();
+
+                $row.find('.product_select_modelsubproducts').show();
+
+                $('.product_select_subproducts').change(function() {
+                    filterModelSubproducts($row);
+                });
+
             });
+
 
             $('.product_select_item_products').on('change', function() {
                 const selectedProduct = $(this).val();
@@ -273,8 +248,9 @@
                 });
             });
 
-            $('.product_select_subproducts').on('change', function() {
+            $('.product_select_modelsubproducts').on('mouseover', function() {
                 const selectedPrice = $(this).find('option:selected').data('price');
+                console.log(selectedPrice);
                 $(this).closest('tr').find('.product_span_price_item').text(selectedPrice);
             });
 
@@ -285,7 +261,9 @@
                 const orderId = $row.find('.order_id').val();
                 const productId = $row.find('.product_select_item_products').val();
                 const subProductId = $row.find('.product_select_subproducts').val();
+                const modelSubProductId = $row.find('.product_select_modelsubproducts').val();
                 const orderDate = $row.find('.product_item_date').val();
+                const orderTime = $row.find('.time_date').val();
 
                 $.ajax({
                     url: '/update-order',
@@ -294,7 +272,9 @@
                         orderId: orderId,
                         productId: productId,
                         subProductId: subProductId,
-                        orderDate: orderDate
+                        modelSubProductId: modelSubProductId,
+                        orderDate: orderDate,
+                        orderTime: orderTime
                     },
                     success: function(response) {
                         location.reload();
@@ -304,6 +284,64 @@
                     }
                 });
             });
+
+            flatpickr.localize(flatpickr.l10ns.ru);
+            flatpickr(".product_item_date", {
+                enableTime: false,
+                dateFormat: "Y-m-d",
+                time_24hr: true,
+                minuteIncrement: 10,
+                minDate: 'today',
+                "locale": {
+                    "firstDayOfWeek": 1,
+                },
+                disable: [
+                    function(date) {
+                        return (date.getDay() === 0 || date.getDay() === 6);
+                    }
+                ],
+            });
+
+            $('.product_item_date').change(function() {
+                var selectedDate = $(this).val();
+                $.ajax({
+                    url: '/get-time-slots',
+                    type: 'GET',
+                    success: function(data) {
+                        updateAvailableTimes(data, selectedDate);
+                    }
+                });
+            });
+
+            function updateAvailableTimes(data, selectedDate) {
+                var occupiedSlots = data[selectedDate] || [];
+                var availableTimes = [
+                    "08:00", "09:00", "10:00", "11:00", "12:00",
+                    "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"
+                ];
+
+                // Функция для проверки занятости временного интервала
+                function isOccupied(time) {
+                    for (var i = 0; i < occupiedSlots.length; i++) {
+                        var start = occupiedSlots[i].start;
+                        var end = occupiedSlots[i].end;
+                        if (time >= start && time < end) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                // Очищаем селект и добавляем доступные временные интервалы
+                var $timeSelect = $('.time_date');
+                $timeSelect.empty();
+                $timeSelect.append('<option selected hidden="hidden">Час запису</option>');
+                availableTimes.forEach(function(time) {
+                    if (!isOccupied(time)) {
+                        $timeSelect.append('<option value="' + time + '">' + time + '</option>');
+                    }
+                });
+            }
         });
 
     </script>

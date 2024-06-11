@@ -20,6 +20,10 @@
             <script type="text/javascript" src="{{ asset('js/toastr.min.js') }}"></script>
             <script type="text/javascript" src="{{ asset('js/plugins.js') }}"></script>
             <script type="text/javascript" src="{{ asset('js/script.js') }}"></script>
+            <script src="{{ asset('js/OwlCarousel/dist/owl.carousel.js') }}"></script>
+            <link rel="stylesheet" href="{{ asset('js/OwlCarousel/dist/assets/owl.carousel.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('js/OwlCarousel/dist/assets/owl.theme.default.min.css') }}">
+            <link rel="stylesheet" href="owlcarousel/owl.theme.default.min.css">
             <link rel="stylesheet" href=" {{ asset('css/bootstrap.min.css') }}">
             <link rel="stylesheet" href=" {{ asset('js/toastr.min.css') }}">
             <link rel="stylesheet" href=" {{ asset('style.css') }}">
@@ -37,6 +41,31 @@
         }
         .testimonial-slider {
             padding: 10px 0px 40px;
+        }
+
+        .card .card-logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        .card-img-wrapper img{
+            display: block;
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 100%;
+        }
+
+        .gradient-custom {
+            /* fallback for old browsers */
+            background: #6a11cb;
+
+            /* Chrome 10-25, Safari 5.1-6 */
+            background: -webkit-linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(150,150,150,1) 50%);
+
+            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(150,150,150,1) 50%);
         }
     </style>
     <body data-bs-spy="scroll" data-bs-target="#navbar" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true" tabindex="0">
