@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class IndexController extends AbstractController
@@ -138,6 +139,40 @@ class IndexController extends AbstractController
         }
 
         return $this->redirect('/');
+    }
+
+    #[Route('/update-user', name: 'update_user', methods: 'post')]
+    public function updateUser(Request $request, ManagerRegistry $doctrine, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher)
+    {
+        $params = $request->request->all();
+
+        $user = $this->getUser();
+
+        if (!empty($params['fio'])){
+            $user->setFio($params['fio']);
+        }
+
+        if (!empty($params['email'])){
+            $user->setEmail($params['email']);
+        }
+
+        if (!empty($params['phoneNumber'])){
+            $user->setPhoneNumber($params['phoneNumber']);
+        }
+
+        if (!empty($params['password'])){
+            $user->setPassword($userPasswordHasher->hashPassword(
+                $user,
+                $params['password']
+            ));
+        }
+
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return new Response(json_encode(['data' => 'success']), Response::HTTP_OK, ['Content-Type' => 'application/json']);
+
     }
 
     #[Route('/delete-order', name: 'delete_order', methods: 'post')]

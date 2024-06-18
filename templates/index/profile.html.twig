@@ -24,6 +24,12 @@
                             <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
                                  class="rounded-circle img-fluid" style="width: 150px;">
                             <h5 class="my-3">{{ user.fio }}</h5>
+                            <div class="d-flex justify-content-center mb-2" id="edit-button-container">
+                                <a id="edit-profile-data" class="btn btn-warning">Редагувати</a>
+                            </div>
+                            <div class="d-flex justify-content-center mb-2" id="save-button-container" style="display: none!important;">
+                                <a id="edit-profile-data-save" class="btn btn-warning">Зберігти</a>
+                            </div>
                             <div class="d-flex justify-content-center mb-2">
                                 <a href="{{ path('app_logout') }}" class="btn btn-primary">Вийти з облікового запису</a>
                             </div>
@@ -35,10 +41,11 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <p class="mb-0">Прізвище Ім'я По батькові</p>
+                                    <p class="mb-0 ">Прізвище Ім'я По батькові</p>
                                 </div>
                                 <div class="col-sm-9">
-                                    <p class="text-muted mb-0">{{ user.fio }}</p>
+                                    <p class="text-muted mb-0 text-fio">{{ user.fio }}</p>
+                                    <input type="text" id="input-fio" class="form-control" style="display: none">
                                 </div>
                             </div>
                             <hr>
@@ -47,7 +54,9 @@
                                     <p class="mb-0">Пошта</p>
                                 </div>
                                 <div class="col-sm-9">
-                                    <p class="text-muted mb-0">{{ user.email }}</p>
+                                    <p class="text-muted mb-0 text-email">{{ user.email }}</p>
+                                    <input type="text" id="input-email" class="form-control" style="display: none">
+
                                 </div>
                             </div>
                             <hr>
@@ -56,10 +65,22 @@
                                     <p class="mb-0">Номер телефону</p>
                                 </div>
                                 <div class="col-sm-9">
-                                    <p class="text-muted mb-0">{{ user.phoneNumber }}</p>
+                                    <p class="text-muted mb-0 text-phonenumber">{{ user.phoneNumber }}</p>
+                                    <input type="text" id="input-phonenumber" class="form-control" style="display: none">
+
                                 </div>
                             </div>
                             <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Пароль</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0 text-password">*********</p>
+                                    <input type="text" id="input-password" class="form-control" style="display: none">
+
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -200,6 +221,37 @@
     </section>
 
     <script>
+
+        $(document).ready(function() {
+            $('#edit-profile-data').click(function() {
+                $('.text-fio, .text-email, .text-phonenumber, .text-password').hide();
+                $('#input-fio, #input-email, #input-phonenumber, #input-password').show();
+                $('#edit-profile-data').hide();
+                $('#save-button-container').show();
+            });
+
+            $('#edit-profile-data-save').click(function() {
+                var updatedData = {
+                    fio: $('#input-fio').val(),
+                    email: $('#input-email').val(),
+                    phoneNumber: $('#input-phonenumber').val(),
+                    password: $('#input-password').val()
+                };
+
+                $.ajax({
+                    url: '/update-user', // URL для обработки запроса на сервере
+                    method: 'POST',
+                    data: updatedData,
+                    success: function(response) {
+                        location.reload();
+                    },
+                    error: function(error) {
+                        alert('Помилка при збереженні даних');
+                    }
+                });
+            });
+        });
+
 
         function filterModelSubproducts($row) {
             $row.find('.product_select_modelsubproducts option').each(function() {
