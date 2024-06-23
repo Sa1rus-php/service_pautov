@@ -99,6 +99,7 @@
                                     <th scope="col">Ціна</th>
                                     <th scope="col">Дата запису</th>
                                     <th scope="col">Приблизні години очікування</th>
+                                    <th scope="col">Стутус замовлення</th>
                                     <th scope="col">Дії</th>
                                 </tr>
                                 </thead>
@@ -157,6 +158,13 @@
                                                 <td>
                                                     <span class="">{{ order.subproduct.execution }}</span>
                                                 </td>
+                                                <td>
+                                                    {% if order.status == 1 %}
+                                                        <span class="product_span_item_status">Виконаний</span>
+                                                    {% else %}
+                                                        <span class="product_span_item_status">У процесі</span>
+                                                    {% endif %}
+                                        </td>
                                                 <td><button class="btn btn-warning btn-edit-product">Редагувати</button></td>
                                                 <td><button type="submit" class="btn btn-danger btn-delete-product">Скасовувати</button></td>
                                                 <td><button class="btn btn-success btn-save-product" style="display: none;">Зберегти</button></td>
@@ -272,7 +280,7 @@
                 e.preventDefault();
                 const $row = $(this).closest('tr');
 
-                $row.find('.product_span_item_product, .product_span_item_subproduct, .product_span_item_date, .product_span_item_modelsubproduct').hide();
+                $row.find('.product_span_item_product, .product_span_item_subproduct, .product_span_item_date, .product_span_item_modelsubproduct, .product_span_item_status').hide();
                 $row.find('.product_select_item_products, .product_select_subproducts, .product_item_date, .time_date').show();
 
                 $row.find('.btn-edit-product, .btn-delete-product').hide();
